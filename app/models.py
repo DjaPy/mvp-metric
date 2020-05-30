@@ -22,12 +22,21 @@ user = Table(
 )
 
 device = Table(
-    "main_devices", metadata,
+    "device", metadata,
 
     Column("id", Integer, primary_key=True),
     Column("changed", DateTime),
     Column("mac_address", String),
 
+)
+
+user_device = Table(
+    'user_device', metadata,
+
+    Column('id', Integer, primary_key=True),
+    Column('changed', DateTime),
+    Column('user_id', Integer, ForeignKey('user.id', ondelete='CASCADE')),
+    Column('device_id', Integer, ForeignKey('device.id', ondelete='CASCADE'))
 )
 
 
