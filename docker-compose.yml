@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  api:
+  mvp_metric:
     build: .
     image: simpleapi:latest
     command: >
@@ -13,16 +13,16 @@ services:
     ports:
       - "5057:5057"
     depends_on:
-      - db
+      - db_mvp_metric
 
-  db:
+  db_mvp_metric:
     image: postgres:12.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env
     ports:
-      - "5432:5432"
+      - "12100:5432"
 
 volumes:
-  postgres_data:
+  pg_data_mvp_metric:
