@@ -52,3 +52,15 @@ class CreateAllMetrics(BaseModel):
 
 class CreateResponseAllMetrics(BaseModel):
     result: str = 'OK'
+
+
+class AllMetricLast(BaseModel):
+    metric: Metric
+    heart_rate: HeartRate
+    temperature_measurement: TemperatureMeasurement
+    user: User
+
+
+class AllMetricLastResponse(BaseModel):
+    all_metric_last: List[AllMetricLast]
+
