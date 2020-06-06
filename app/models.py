@@ -48,6 +48,7 @@ metric = Table(
     Column("metric_datetime", DateTime),
     Column("walking_steps", Integer),
     Column("run_steps", Integer),
+    Column('total_steps', Integer),
     Column("aerobic_steps", Integer),
     Column("distance", Integer),
     Column("burned_calories", Integer),

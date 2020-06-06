@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+
+  db_mvp_metric_test:
+    image: postgres:12.0-alpine
+    volumes:
+      - pg_data_mvp_metric:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "12100:5432"
+
+volumes:
+  pg_data_mvp_metric:

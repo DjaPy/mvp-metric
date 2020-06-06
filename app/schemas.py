@@ -27,15 +27,30 @@ class Metric(BaseModel):
     metric_datetime: datetime
 
 
+class CreateMetric(BaseModel):
+    metric: List[Metric]
+    mac_address: str
+
+
 class HeartRate(BaseModel):
-    pulse: Optional[int]
+    pulse: Optional[List[int]]
     metric_datetime: Optional[datetime]
+
+
+class CreateHeartRate(BaseModel):
+    heart_rate: List[HeartRate]
+    mac_address: str
 
 
 class TemperatureMeasurement(BaseModel):
     unit_temperature: Optional[UnitTemperature]
     temperature_measurement: Optional[float]
     metric_datetime: Optional[datetime]
+
+
+class CreateTemperatureMeasurement(BaseModel):
+    temperature_measurement: List[TemperatureMeasurement]
+    mac_address: str
 
 
 class HeartRateVariability(BaseModel):
@@ -50,7 +65,7 @@ class CreateAllMetrics(BaseModel):
     temperature_measurement: Optional[List[TemperatureMeasurement]]
 
 
-class CreateResponseAllMetrics(BaseModel):
+class CreateResponseMetrics(BaseModel):
     result: str = 'OK'
 
 
