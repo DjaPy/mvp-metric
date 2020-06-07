@@ -89,6 +89,7 @@ class AllMetricLast(BaseModel):
     metric: MetricResponse
     heart_rate: Optional[int]
     temperature_measurement: Optional[float]
+    sleep: Optional[int]
     user: Optional[int]
 
 

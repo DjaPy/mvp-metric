@@ -1,7 +1,7 @@
 from dateutil import tz
 from sqlalchemy.sql import and_
 
-from app.models import device, user_device, metric
+from app.models import device, user_device, metric, sleep
 from datetime import timedelta, datetime
 
 
@@ -79,3 +79,23 @@ async def get_metric_of_day(database, user_id):
         'burned_calories': burned_calories,
         'distance': distance,
     }
+
+
+async def get_sleep(database, user_id):
+    today = datetime.utcnow().date()
+    start = datetime(today.year, today.month, today.day)
+    current = datetime.utcnow()
+    query_sleep_by_user = sleep.select().where(
+        and_(
+            sleep.c.user_id == user_id,
+            sleep.c.metric_datetime.between(start, current)
+        )
+    )
+    sleep_res = await database.fetch_all(query_sleep_by_user)
+
+    sleep_write = []
+    for sleep_mod in sleep_res:
+        sleep_write.append(sleep_mod['sleep_minutes'])
+
+    sleep_of_day = sum(sleep_write)
+    return sleep_of_day
