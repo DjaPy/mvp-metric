@@ -12,11 +12,17 @@ from app.schemas import (
     CreateHeartRate,
     CreateMetric,
     CreateTemperatureMeasurement,
+    CreateSleep,
     AllMetricLast,
     AllMetricLastResponse,
+    MetricResponse,
 )
-from app.utils import get_user_by_device, get_average_pulse_in_minute
-from app.models import user, user_device, heart_rate, metric, temp_meas, device
+from app.utils import (
+    get_user_by_device,
+    get_average_pulse_in_minute,
+    get_metric_of_day,
+)
+from app.models import user, sleep, heart_rate, metric, temp_meas
 
 templates = Jinja2Templates(directory="templates")
 
@@ -113,6 +119,33 @@ async def write_temperature_measurement(payload: CreateTemperatureMeasurement):
     return response.dict()
 
 
+@router.post(
+    '/create_sleep/',
+    response_model=CreateResponseMetrics,
+    status_code=status.HTTP_201_CREATED,
+)
+async def write_sleep(payload: CreateSleep):
+    if not payload.sleep_list or not payload.mac_address:
+        raise HTTPException
+    sleep_m = payload.sleep_list
+    mac_address = payload.mac_address
+    user_obj = await get_user_by_device(database, mac_address)
+    timestamp = datetime.now()
+
+    save_sleep = []
+    for sleep_model in sleep_m:
+        sleep_dict = sleep_model.dict()
+        sleep_dict['user_id'] = user_obj['user_id']
+        sleep_dict['timestamp'] = timestamp
+        save_sleep.append(sleep_dict)
+    query_sleep = sleep.insert().values(save_sleep)
+    await database.execute(query_sleep)
+
+    response = CreateResponseMetrics()
+
+    return response.dict()
+
+
 @router.get(
     '/all_metric_now/',
     response_model=AllMetricLastResponse,
@@ -122,7 +155,29 @@ async def get_last_metrics():
     query_users = user.select()
     users = await database.fetch_all(query_users)
     users_ids = []
+    all_metric_list = []
     for user_obj in users:
-        users_ids.append(user_obj.id)
+        metric_of_day = await get_metric_of_day(database, user_obj['id'])
+        metric_response = MetricResponse(
+            total_steps=metric_of_day['steps'],
+            burned_calories=metric_of_day['burned_calories'],
+            distance=metric_of_day['distance'],
+        )
+        query_heart_rate_current = heart_rate.select().where(
+            heart_rate.c.user_id == user_obj['id'],
+        )
+        heart_rate_current = await database.fetch_one(query_heart_rate_current)
+        query_temperature_measurement = temp_meas.select().where(temp_meas.c.user_id == user_obj['id'])
+        temp_meas_current = await database.fetch_one(query_temperature_measurement)
+        all_metric = AllMetricLast(
+            metric=metric_response,
+            heart_rate=heart_rate_current['pulse'],
+            temperature_measurement=temp_meas_current['temperature_measurement'],
+            user=user_obj['id'],
+        )
+        all_metric_list.append(all_metric)
 
-    query_metric_by_user = user.select().where(user.c.id_in(users_ids))
+    all_metrics = AllMetricLastResponse(
+        all_metric_last=all_metric_list
+    )
+    return all_metrics

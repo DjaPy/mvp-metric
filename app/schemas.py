@@ -27,6 +27,12 @@ class Metric(BaseModel):
     metric_datetime: datetime
 
 
+class MetricResponse(BaseModel):
+    total_steps: Optional[int]
+    burned_calories: Optional[float]
+    distance: Optional[int]
+
+
 class CreateMetric(BaseModel):
     metric: List[Metric]
     mac_address: str
@@ -53,6 +59,16 @@ class CreateTemperatureMeasurement(BaseModel):
     mac_address: str
 
 
+class Sleep(BaseModel):
+    sleep_minutes: Optional[int]
+    metric_datetime: Optional[datetime]
+
+
+class CreateSleep(BaseModel):
+    sleep_list: List[Sleep]
+    mac_address: str
+
+
 class HeartRateVariability(BaseModel):
     pass
 
@@ -70,10 +86,10 @@ class CreateResponseMetrics(BaseModel):
 
 
 class AllMetricLast(BaseModel):
-    metric: Metric
-    heart_rate: HeartRate
-    temperature_measurement: TemperatureMeasurement
-    user: User
+    metric: MetricResponse
+    heart_rate: Optional[int]
+    temperature_measurement: Optional[float]
+    user: Optional[int]
 
 
 class AllMetricLastResponse(BaseModel):

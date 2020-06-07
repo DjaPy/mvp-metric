@@ -5,6 +5,7 @@ from sqlalchemy import (
     Integer,
     String,
     Boolean,
+    Float,
     DateTime,
     ForeignKey,
 )
@@ -71,7 +72,17 @@ temp_meas = Table(
     Column("id", Integer, primary_key=True),
     Column("timestamp", DateTime),
     Column("metric_datetime", DateTime),
-    Column("temperature_measurement", Integer),
+    Column("temperature_measurement", Float),
     Column('unit_temperature', String),
+    Column("user_id", Integer, ForeignKey("user.id"))
+)
+
+sleep = Table(
+    "sleep", metadata,
+
+    Column("id", Integer, primary_key=True),
+    Column("timestamp", DateTime),
+    Column("metric_datetime", DateTime),
+    Column("sleep_minutes", Integer),
     Column("user_id", Integer, ForeignKey("user.id"))
 )

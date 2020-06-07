@@ -1,4 +1,7 @@
-from app.models import device, user_device
+from dateutil import tz
+from sqlalchemy.sql import and_
+
+from app.models import device, user_device, metric
 from datetime import timedelta, datetime
 
 
@@ -46,3 +49,33 @@ def get_average_pulse_in_minute(heart_rate_models, user_id, now):
             "user_id": user_id,
         },
     ]
+
+
+async def get_metric_of_day(database, user_id):
+    today = datetime.utcnow().date()
+    start = datetime(today.year, today.month, today.day)
+    current = datetime.utcnow()
+    query_metric_by_user = metric.select().where(
+        and_(
+            metric.c.user_id == user_id,
+            metric.c.metric_datetime.between(start, current)
+        )
+    )
+
+    metric_res = await database.fetch_all(query_metric_by_user)
+    steps_write = []
+    burned_calories_write = []
+    distance_write = []
+    for metric_one in metric_res:
+        steps_write.append(metric_one['total_steps'])
+        burned_calories_write.append(metric_one['burned_calories'])
+        distance_write.append(metric_one['distance'])
+
+    steps = sum(steps_write)
+    burned_calories = sum(burned_calories_write)
+    distance = sum(distance_write)
+    return {
+        'steps': steps,
+        'burned_calories': burned_calories,
+        'distance': distance,
+    }
