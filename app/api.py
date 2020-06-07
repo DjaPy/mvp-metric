@@ -35,6 +35,44 @@ async def main(request: Request):
     return templates.TemplateResponse("main.html", {"request": request, "id": id})
 
 
+@router.get("/metric")
+async def metric(request: Request):
+    query_users = user.select()
+    users = await database.fetch_all(query_users)
+    all_metric_list = []
+    for user_obj in users:
+        metric_of_day = await get_metric_of_day(database, user_obj['id'])
+        metric_response = MetricResponse(
+            total_steps=metric_of_day['steps'],
+            burned_calories=metric_of_day['burned_calories'],
+            distance=metric_of_day['distance'],
+        )
+        query_heart_rate_current = heart_rate.select().where(
+            heart_rate.c.user_id == user_obj['id'],
+        )
+        heart_rate_current = await database.fetch_one(query_heart_rate_current)
+        query_temperature_measurement = temp_meas.select().where(temp_meas.c.user_id == user_obj['id'])
+        temp_meas_current = await database.fetch_one(query_temperature_measurement)
+        sleep_of_day = await get_sleep(database, user_obj['id'])
+        all_metric = AllMetricLast(
+            metric=metric_response,
+            heart_rate=heart_rate_current['pulse'],
+            temperature_measurement=temp_meas_current['temperature_measurement'],
+            sleep=sleep_of_day,
+            user=user_obj['id'],
+        )
+        all_metric_list.append(all_metric)
+
+    all_metrics = AllMetricLastResponse(
+        all_metric_last=all_metric_list
+    )
+    response_dict = {
+        'request': request
+    }
+    response_dict.update(all_metrics.dict())
+    return templates.TemplateResponse('metric.html', response_dict)
+
+
 @router.get('/users/', response_model=List[User], status_code=status.HTTP_200_OK)
 async def read_users():
     query = user.select()

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+  {% block content %}
+
+    {% for metric in all_metric_last %}
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">device</th>
+            <th scope="col">steps</th>
+            <th scope="col">distance</th>
+            <th scope="col">burned_calories</th>
+            <th scope="col">pulse</th>
+            <th scope="col">sleep</th>
+            <th scope="col">temperature</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">{{ metric.user }}</th>
+            <td>{{ metric.metric.total_steps }}</td>
+            <td>{{ metric.metric.distance }}</td>
+            <td>{{ metric.metric.burned_calories }}</td>
+            <td>{{ metric.heart_rate}}</td>
+            <td>{{ metric.sleep }}</td>
+            <td>{{ metric.temperature_measurement }}</td>
+          </tr>
+        </tbody>
+      </table>
+    {% endfor %}
+  {% endblock %}

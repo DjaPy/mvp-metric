@@ -1,85 +1,18 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
-    <title>Dashboard metric</title>
-  </head>
-  <body>
+{% extends "base.html" %}
+  {% block content %}
     <script>
-      function poll(fn, callback, errback, timeout, interval) {
-        var endTime = Number(new Date()) + (timeout || 180);
-        interval = interval || 100;
+      let current_url = window.location.href;
+      let url_metric = current_url + 'metric'
+      let delay = 300000
 
-          (function p() {
-            // If the condition is met, we're done!
-            if(fn()) {
-                callback();
-            }
-            // If the condition isn't met but the timeout hasn't elapsed, go again
-            else if (Number(new Date()) < endTime) {
-                setTimeout(p, interval);
-            }
-            // Didn't match and too much time, reject!
-            else {
-                errback(new Error('timed out for ' + fn + ': ' + arguments));
-            }
-          })();
-      }
-
-      // Usage:  ensure element is visible
-      poll(
-          function() {
-              return document.getElementById('lightbox').offsetWidth > 0;
-          },
-          function() {
-              // Done, success callback
-          },
-          function() {
-              // Error, failure callback
-          }
-      );</script>
-    <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">device</th>
-        <th scope="col">steps</th>
-        <th scope="col">pulse</th>
-        <th scope="col">temperature</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">B00802873423</th>
-        <td>23423</td>
-        <td>68</td>
-        <td>36.6</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>@twitter</td>
-      </tr>
-    </tbody>
-  </table>
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-  </body>
-</html>
+      setInterval(function () {
+        fetch(url_metric).then(function(response) {
+          response.text().then(function(text) {
+            poemDisplay.textContent = text;
+          });
+        });
+      },
+      delay
+      )
+    </script>
+  {% endblock %}
