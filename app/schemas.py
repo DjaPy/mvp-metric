@@ -43,8 +43,13 @@ class HeartRate(BaseModel):
     metric_datetime: Optional[datetime]
 
 
+class HeartRateLast(BaseModel):
+    pulse: Optional[int]
+    metric_datetime: Optional[datetime]
+
+
 class CreateHeartRate(BaseModel):
-    heart_rate: List[HeartRate]
+    heart_rate: List[HeartRateLast]
     mac_address: str
 
 

@@ -120,9 +120,14 @@ async def write_heart_rate(payload: CreateHeartRate):
     timestamp = datetime.now()
     save_heart_rate = []
     for heart_rate_model in heart_rate_m:
-        heart_rate_duo = get_average_pulse_in_minute(heart_rate_model, user_obj['user_id'], timestamp)
-        save_heart_rate.append(heart_rate_duo[0])
-        save_heart_rate.append(heart_rate_duo[1])
+        # heart_rate_duo = get_average_pulse_in_minute(heart_rate_model, user_obj['user_id'], timestamp)
+        # save_heart_rate.append(heart_rate_duo[0])
+        # save_heart_rate.append(heart_rate_duo[1])
+        heart_rate_dict = heart_rate_model.dict()
+        heart_rate_dict['user_id'] = user_obj['user_id']
+        heart_rate_dict['timestamp'] = timestamp
+        save_heart_rate.append(heart_rate_dict)
+
     query_heart_rate = heart_rate.insert().values(save_heart_rate)
     await database.execute(query_heart_rate)
 
@@ -219,5 +224,5 @@ async def get_last_metrics():
 
     all_metrics = AllMetricLastResponse(
         all_metric_last=all_metric_list
-    )
+    ).dict()
     return all_metrics

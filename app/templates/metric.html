@@ -5,24 +5,24 @@
       <table class="table">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">device</th>
-            <th scope="col">steps</th>
-            <th scope="col">distance</th>
-            <th scope="col">burned_calories</th>
-            <th scope="col">pulse</th>
-            <th scope="col">sleep</th>
-            <th scope="col">temperature</th>
+            <th scope="col">user</th>
+            <th scope="col" >steps</th>
+            <th scope="col" >distance</th>
+            <th scope="col" >burned_calories</th>
+            <th scope="col" >pulse</th>
+            <th scope="col" >sleep</th>
+            <th scope="col" >temperature</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th scope="row">{{ metric.user }}</th>
-            <td>{{ metric.metric.total_steps }}</td>
-            <td>{{ metric.metric.distance }}</td>
-            <td>{{ metric.metric.burned_calories }}</td>
-            <td>{{ metric.heart_rate}}</td>
-            <td>{{ metric.sleep }}</td>
-            <td>{{ metric.temperature_measurement }}</td>
+            <th scope="row" id="user">{{ metric.user }}</th>
+            <td id="steps">{{ metric.metric.total_steps }}</td>
+            <td id="distance">{{ metric.metric.distance }}</td>
+            <td id="burned_calories">{{ metric.metric.burned_calories }}</td>
+            <td id="pulse">{{ metric.heart_rate}}</td>
+            <td id="sleep">{{ metric.sleep }}</td>
+            <td id="temperature">{{ metric.temperature_measurement }}</td>
           </tr>
         </tbody>
       </table>

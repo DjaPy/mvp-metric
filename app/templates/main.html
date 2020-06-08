@@ -1,18 +1,90 @@
 {% extends "base.html" %}
   {% block content %}
     <script>
-      let current_url = window.location.href;
-      let url_metric = current_url + 'metric'
-      let delay = 300000
 
-      setInterval(function () {
-        fetch(url_metric).then(function(response) {
-          response.text().then(function(text) {
-            poemDisplay.textContent = text;
-          });
-        });
-      },
-      delay
-      )
+      const current_url = window.location.href;
+      const url_metric = current_url + 'all_metric_now/'
+      const delay = 3000
+      let body = document.getElementsByTagName('body')[0]
+
+      let table = document.createElement('table');
+      table.className = 'table';
+      let thead = document.createElement('thead');
+      thead.className = 'thead-dark';
+      let tr1 = document.createElement('tr');
+      let th1 = document.createElement('th');
+      th1.scope = 'col';
+      th1.innerHTML = 'User';
+      tr1.appendChild(th1)
+      let th2 = document.createElement('th');
+      th2.scope = 'col';
+      th2.innerHTML = 'steps';
+      tr1.appendChild(th2)
+      let th3 = document.createElement('th');
+      th3.scope = 'col';
+      th3.innerHTML = 'distance';
+      let th4 = document.createElement('th');
+      tr1.appendChild(th3)
+      th4.scope = 'col';
+      th4.innerHTML = 'burned_calories';
+      tr1.appendChild(th4)
+      let th5 = document.createElement('th');
+      th5.scope = 'col';
+      th5.innerHTML = 'pulse';
+      tr1.appendChild(th5)
+      let th6 = document.createElement('th');
+      th6.scope = 'col';
+      th6.innerHTML = 'sleep';
+      tr1.appendChild(th6)
+      let th7 = document.createElement('th');
+      th7.scope = 'col';
+      th7.innerHTML = 'temperature'
+      tr1.appendChild(th7)
+      thead.appendChild(tr1)
+      table.appendChild(thead)
+      let tbody = document.createElement('tbody');
+      let tr2 = document.createElement('tr');
+      let th_value_1 = document.createElement('th');
+      th_value_1.scope = 'col';
+      tr2.appendChild(th_value_1)
+      let th_value_2 = document.createElement('th');
+      th_value_2.scope = 'col';
+      tr2.appendChild(th_value_2)
+      let th_value_3 = document.createElement('th');
+      th_value_3.scope = 'col';
+      tr2.appendChild(th_value_3)
+      let th_value_4 = document.createElement('th');
+      th_value_4.scope = 'col';
+      tr2.appendChild(th_value_4)
+      let th_value_5 = document.createElement('th');
+      th_value_5.scope = 'col';
+      tr2.appendChild(th_value_5)
+      let th_value_6 = document.createElement('th');
+      th_value_6.scope = 'col';
+      tr2.appendChild(th_value_6)
+      let th_value_7 = document.createElement('th');
+      th_value_7.scope = 'col';
+      tr2.appendChild(th_value_7)
+      tbody.appendChild(tr2)
+      table.appendChild(tbody)
+      body.appendChild(table)
+
+      setInterval(() => {
+        fetch(url_metric)
+        .then(response => response.json())
+        .then(data => {
+          for (const all_metric of data.all_metric_last) {
+            th_value_1.innerHTML = all_metric.user;
+            th_value_2.innerHTML = all_metric.metric.total_steps;
+            th_value_3.innerHTML = all_metric.metric.distance;
+            th_value_4.innerHTML = all_metric.metric.burned_calories;
+            th_value_5.innerHTML = all_metric.heart_rate;
+            th_value_6.innerHTML = all_metric.sleep;
+            th_value_7.innerHTML = all_metric.temperature_measurement;
+          }
+        })
+          },
+              delay
+        )
     </script>
   {% endblock %}
